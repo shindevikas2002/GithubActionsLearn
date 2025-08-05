@@ -1,0 +1,22 @@
+name: Maven Tests
+
+on:
+  workflow_dispatch:  # Allows you to manually trigger the workflow from GitHub UI
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'  # You can also use 'zulu' or 'oracle'
+        java-version: '17'
+
+    - name: Run Maven Tests
+      run: mvn clean test
