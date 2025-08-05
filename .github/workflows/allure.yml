@@ -1,14 +1,14 @@
-name: Run Tests and Publish Allure Report
+name: Maven with Allure Report
 
 on:
-  workflow_dispatch:  
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Java
@@ -21,19 +21,18 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - run: npm install -g allure-commandline
+    - run: npm install -g allure-commandline --save-dev
 
-    - name: Run tests
+    - name: Run Maven Tests
       run: mvn clean test
 
-    - name: Generate Allure report
+    - name: Generate Allure Report
       run: |
         mvn allure:report
-        allure generate target/site/allure-maven-plugin -o allure-report --clean
+        allure generate target/site/allure-maven-plugin -o allure-report
 
-    - name: Deploy Allure Report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Upload Allure Report as Artifact
+      uses: actions/upload-artifact@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./allure-report
-        publish_branch: gh-pages
+        name: allure-report
+        path: allure-report
